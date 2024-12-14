@@ -50,8 +50,8 @@ function ChatInput({ onSendMessage, isLoading, theme = 'light' }) {
   };
 
   return (
-    <div className={`${theme === 'dark' ? 'bg-gray-900 border-gray-700 rounded-2xl' : 'rounded-2xl'} p-4`}>
-      <form onSubmit={handleSubmit} className="max-w-4xl mx-auto relative">
+    <div className={`${theme === 'dark' ? 'bg-gray-800 border-gray-700 rounded-2xl' : 'rounded-2xl'} py-4 px-0`}>
+      <form onSubmit={handleSubmit} className="max-w-3xl mx-auto relative">
         <div className="relative flex items-center">
           <textarea
             ref={textareaRef}

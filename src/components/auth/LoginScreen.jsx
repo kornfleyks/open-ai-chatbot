@@ -1,5 +1,5 @@
 import React from 'react';
-import { LoginButton } from './LoginButton';
+import { LoginButton } from '../LoginButton';
 
 export default function LoginScreen({ theme }) {
   return (
