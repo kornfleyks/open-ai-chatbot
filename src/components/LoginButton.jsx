@@ -61,11 +61,11 @@ export function LoginButton({ theme }) {
             : 'hover:bg-gray-100'
         }`}
       >
-        <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
+        <div className={`w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium `}>
           {user.name.charAt(0).toUpperCase()}
         </div>
         <div className="text-left">
-          <div className="text-sm font-medium">{user.name}</div>
+          <div className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-100' : 'text-gray-500'}`}>{user.name}</div>
           <div className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>{user.email}</div>
         </div>
       </button>

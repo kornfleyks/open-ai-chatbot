@@ -15,7 +15,8 @@ const ChatInterface = ({
   activeThreadId, 
   threads = [],
   onThreadSelect,
-  onNewChat
+  onNewChat,
+  onOpenModal
 }) => {
   return (
     <div className={`flex-1 flex flex-col min-h-screen ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
@@ -28,10 +29,11 @@ const ChatInterface = ({
         activeThreadId={activeThreadId}
         onThreadSelect={onThreadSelect}
         onNewChat={onNewChat}
+        onOpenModal={onOpenModal}
       />
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto px-4 py-24 pb-36">
+      <div className="flex-1 overflow-y-auto px-4 py-24 pb-36 relative z-0">
         {activeThreadId ? (
           <div className="max-w-[800px] mx-auto space-y-6">
             {messages.map((message, index) => (
@@ -56,11 +58,47 @@ const ChatInterface = ({
             <div ref={messagesEndRef} />
           </div>
         ) : (
-          <div className="h-full flex items-center justify-center">
-            <div className="text-center text-gray-500">
-              <h2 className="text-2xl font-semibold mb-2">Welcome to Chat</h2>
-              <p>Open the menu to select a chat or start a new one</p>
+          <div className="max-w-[800px] mx-auto h-full flex flex-col items-center justify-center text-center px-4 relative z-0">
+            <div className={`text-4xl font-bold mb-4 ${theme === 'dark' ? 'text-gray-100' : 'text-gray-900'}`}>
+              Welcome to AI Chat
             </div>
+            <p className={`text-lg mb-8 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+              Start a new conversation or select an existing chat
+            </p>
+            <button
+              onClick={onNewChat}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+                theme === 'dark'
+                  ? 'bg-blue-500/10 hover:bg-blue-500/20 text-blue-400'
+                  : 'bg-blue-50 hover:bg-blue-100 text-blue-600'
+              } transition-colors`}
+            >
+              Start New Chat
+            </button>
+            {
+              threads.length > 0 && (
+                <div className="mt-8">
+                  <h2 className={`text-lg font-semibold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-900'}`}>
+                    Existing Chats
+                  </h2>
+                  <div className="mt-4">
+                    {threads.map((thread) => (
+                      <div
+                        key={thread.threadId}
+                        onClick={() => onThreadSelect(thread.threadId)}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+                          theme === 'dark'
+                            ? 'bg-blue-500/10 hover:bg-blue-500/20 text-blue-400'
+                            : 'bg-blue-50 hover:bg-blue-100 text-blue-600'
+                        } transition-colors cursor-pointer`}
+                      >
+                        {thread.threadTitle}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )
+            }
           </div>
         )}
       </div>

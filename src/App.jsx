@@ -4,10 +4,11 @@ import { useChat } from './hooks/useChat';
 import ChatInterface from './components/chat/ChatInterface';
 import LoginScreen from './components/auth/LoginScreen';
 import { Toaster } from 'react-hot-toast';
-import ChatList from './components/ChatList';
+import { ChatListModal } from './components/chat/ChatListModal';
 
 function App() {
   const [theme, setTheme] = useState('light');
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useAuth();
   const { 
     messages, 
@@ -46,6 +47,16 @@ function App() {
             threads={threads}
             onThreadSelect={switchThread}
             onNewChat={createNewThread}
+            onOpenModal={() => setIsModalOpen(true)}
+          />
+          <ChatListModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            threads={threads}
+            activeThreadId={activeThreadId}
+            onThreadSelect={switchThread}
+            onNewChat={createNewThread}
+            theme={theme}
           />
         </>
       )}
