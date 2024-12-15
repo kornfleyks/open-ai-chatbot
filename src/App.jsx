@@ -20,7 +20,8 @@ function App() {
     createNewThread,
     switchThread,
     sendMessage,
-    clearChat
+    clearChat,
+    deleteThread
   } = useChat();
 
   const toggleTheme = () => {
@@ -56,6 +57,7 @@ function App() {
             activeThreadId={activeThreadId}
             onThreadSelect={switchThread}
             onNewChat={createNewThread}
+            onDeleteThread={deleteThread}
             theme={theme}
           />
         </>

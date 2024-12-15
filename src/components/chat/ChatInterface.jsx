@@ -2,7 +2,6 @@ import React from 'react';
 import ChatMessage from '../ChatMessage';
 import ChatInput from '../ChatInput';
 import ChatHeader from './ChatHeader';
-import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
 
 const ChatInterface = ({ 
   theme, 
@@ -81,7 +80,7 @@ const ChatInterface = ({
                   <h2 className={`text-lg font-semibold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-900'}`}>
                     Existing Chats
                   </h2>
-                  <div className="mt-4">
+                  <div className="mt-4 space-y-1">
                     {threads.map((thread) => (
                       <div
                         key={thread.threadId}

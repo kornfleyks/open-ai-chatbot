@@ -61,7 +61,32 @@ export function useChat() {
       setTimeout(() => {
         setMessages(thread.messages); // Set new messages after a brief delay
       }, 0);
+    }
   }
+
+  function deleteThread(threadId) {
+    if (!user?.email) return;
+    
+    const userData = JSON.parse(localStorage.getItem(user.email)) || { threads: [] };
+    const threadIndex = userData.threads.findIndex(t => t.threadId === threadId);
+    
+    if (threadIndex === -1) return;
+    
+    // Remove the thread
+    userData.threads.splice(threadIndex, 1);
+    localStorage.setItem(user.email, JSON.stringify(userData));
+    
+    // Update state
+    setThreads(userData.threads);
+    
+    // If we deleted the active thread, switch to another thread or create new one
+    if (threadId === activeThreadId) {
+      if (userData.threads.length > 0) {
+        switchThread(userData.threads[0].threadId);
+      } else {
+        createNewThread();
+      }
+    }
   }
 
 useEffect(() => {
@@ -144,6 +169,8 @@ function saveMessageToLocalStorage(email, message, source, role) {
     activeThreadId,
     createNewThread,
     switchThread,
-    messagesEndRef
+    messagesEndRef,
+    deleteThread,
+    clearChat
   };
 }

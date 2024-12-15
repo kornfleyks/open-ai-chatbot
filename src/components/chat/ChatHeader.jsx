@@ -35,8 +35,11 @@ const ChatHeader = ({
               AI Chat
             </span>
           </div>
-          
-          <button
+        </div>
+
+        {/* Right side - Theme Toggle & User */}
+        <div className="flex items-center gap-3">
+        <button
             onClick={onOpenModal}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm ${
               theme === 'dark'
@@ -49,10 +52,6 @@ const ChatHeader = ({
             </span>
             {/* <ChevronDownIcon className="w-4 h-4" /> */}
           </button>
-        </div>
-
-        {/* Right side - Theme Toggle & User */}
-        <div className="flex items-center gap-3">
           <button
             onClick={toggleTheme}
             className={`p-2 rounded-lg transition-colors ${
