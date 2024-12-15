@@ -6,18 +6,50 @@ import { UserCircleIcon, ArrowRightStartOnRectangleIcon } from '@heroicons/react
 export function LoginButton({ theme }) {
   const { user, login, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLogin = async () => {
+    setIsLoading(true);
+    try {
+      await login();
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   if (!user) {
     return (
       <button
-        onClick={login}
-        className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
+        onClick={handleLogin}
+        disabled={isLoading}
+        className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-75"
       >
-        <UserCircleIcon className="w-5 h-5" />
-        Sign in
+        {isLoading ? (
+          <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+            <circle 
+              className="opacity-25" 
+              cx="12" 
+              cy="12" 
+              r="10" 
+              stroke="currentColor" 
+              strokeWidth="4"
+              fill="none"
+            />
+            <path 
+              className="opacity-75" 
+              fill="currentColor" 
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            />
+          </svg>
+        ) : (
+          <UserCircleIcon className="w-5 h-5" />
+        )}
+        {isLoading ? 'Signing in...' : 'Sign in'}
       </button>
     );
   }
+
+
 
   return (
     <div className="relative">

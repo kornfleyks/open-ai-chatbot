@@ -4,6 +4,7 @@ import { format } from 'date-fns';
 import { useAuth } from '../auth/AuthContext';
 import { ClipboardDocumentIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
+import remarkGfm from 'remark-gfm';
 
 function ChatMessage({ message, timestamp = new Date(), theme = 'light' }) {
   console.log(message);
@@ -51,15 +52,16 @@ function ChatMessage({ message, timestamp = new Date(), theme = 'light' }) {
             {isUser ? getInitials(user.name) : 'AI'}
           </span>
         </div>
-        <div className={`flex flex-col ${isUser ? 'order-1' : ''}`}>
-          <div className="group relative">
-            <div className={`rounded-2xl px-6 py-2 ${
+        <div className={`flex flex-col`}>
+          <div className="relative">
+            <div className={`rounded-xl px-6 py-2 ${
               isUser 
                 ? 'bg-blue-500 text-white rounded-tr-none' 
                 : theme === 'dark'
                   ? 'bg-gray-700 text-gray-100 rounded-tl-none'
                   : 'bg-gray-100 text-gray-800 rounded-tl-none'
             }`}>
+              
               <ReactMarkdown 
                 className="text-sm whitespace-pre-wrap prose prose-sm max-w-none"
                 components={{
@@ -70,7 +72,7 @@ function ChatMessage({ message, timestamp = new Date(), theme = 'light' }) {
                     }`}>{children}</code>
                   ),
                   pre: ({ children }) => (
-                    <pre className={`rounded p-2 my-1 overflow-x-auto ${
+                    <pre className={`rounded p-4 my-1 overflow-x-auto ${
                       theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
                     }`}>
                       {children}
@@ -80,10 +82,11 @@ function ChatMessage({ message, timestamp = new Date(), theme = 'light' }) {
               >
                 {message.content}
               </ReactMarkdown>
+              
             </div>
           </div>
-          <div className={`flex items-center gap-2 mt-1 mx-2 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
-            {/* Timestamp */}
+          <div className={`flex items-center mt-1 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+            
             <div className={`flex items-center gap-2 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
               <span className={`text-xs ${
                 theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
