@@ -4,10 +4,8 @@ import { format } from 'date-fns';
 import { useAuth } from '../auth/AuthContext';
 import { ClipboardDocumentIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
-import remarkGfm from 'remark-gfm';
 
 function ChatMessage({ message, timestamp = new Date(), theme = 'light' }) {
-  console.log(message);
   const isUser = message.role === 'user';
   const { user } = useAuth();
 
