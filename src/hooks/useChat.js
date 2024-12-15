@@ -84,54 +84,70 @@ export function useChat() {
       if (userData.threads.length > 0) {
         switchThread(userData.threads[0].threadId);
       } else {
-        createNewThread();
+        // createNewThread();
       }
     }
   }
 
-useEffect(() => {
-    if (user?.email) {
-        const loadedThreads = loadThreadsFromLocalStorage(user.email);
-        setThreads(loadedThreads);
-        
-        // If there are threads, set the most recent one as active
-        if (loadedThreads.length > 0) {
-            setActiveThreadId(loadedThreads[0].id);
-            setMessages(loadedThreads[0].messages);
-        } else {
-            // Create a new thread if none exist
-            createNewThread();
-        }
-    }
-}, [user?.email]);
-
-function saveMessageToLocalStorage(email, message, source, role) {
-  if (!activeThreadId) return;
-  
-  const userData = JSON.parse(localStorage.getItem(email)) || { threads: [] };
-  const threadIndex = userData.threads.findIndex(t => t.threadId === activeThreadId);
-  
-  if (threadIndex === -1) return;
-
-  const newMessage = {
-      id: generateUniqueId(email),
-      content: message,
-      email: user.email,
-      source: source,
-      role: role,
-      timestamp: new Date().toISOString()
-  };
-
-  userData.threads[threadIndex].messages.push(newMessage);
-  
-  // Update thread title with first message if it's "New Chat"
-  if (userData.threads[threadIndex].threadTitle === 'New Chat' && userData.threads[threadIndex].messages.length === 1) {
-      userData.threads[threadIndex].threadTitle = message.substring(0, 30) + (message.length > 30 ? '...' : '');
+  function updateThreadTitle(threadId, newTitle) {
+    if (!user?.email) return;
+    
+    const userData = JSON.parse(localStorage.getItem(user.email)) || { threads: [] };
+    const threadIndex = userData.threads.findIndex(t => t.threadId === threadId);
+    
+    if (threadIndex === -1) return;
+    
+    // Update the thread title
+    userData.threads[threadIndex].threadTitle = newTitle;
+    localStorage.setItem(user.email, JSON.stringify(userData));
+    
+    // Update state
+    setThreads([...userData.threads]);
   }
-  
-  localStorage.setItem(email, JSON.stringify(userData));
-  setThreads(userData.threads);
-}
+
+  useEffect(() => {
+      if (user?.email) {
+          const loadedThreads = loadThreadsFromLocalStorage(user.email);
+          setThreads(loadedThreads);
+          
+          // If there are threads, set the most recent one as active
+          if (loadedThreads.length > 0) {
+              setActiveThreadId(loadedThreads[0].id);
+              setMessages(loadedThreads[0].messages);
+          } else {
+              // Create a new thread if none exist
+              // createNewThread();
+          }
+      }
+  }, [user?.email]);
+
+  function saveMessageToLocalStorage(email, message, source, role) {
+    if (!activeThreadId) return;
+    
+    const userData = JSON.parse(localStorage.getItem(email)) || { threads: [] };
+    const threadIndex = userData.threads.findIndex(t => t.threadId === activeThreadId);
+    
+    if (threadIndex === -1) return;
+
+    const newMessage = {
+        id: generateUniqueId(email),
+        content: message,
+        email: user.email,
+        source: source,
+        role: role,
+        timestamp: new Date().toISOString()
+    };
+
+    userData.threads[threadIndex].messages.push(newMessage);
+    
+    // Update thread title with first message if it's "New Chat"
+    if (userData.threads[threadIndex].threadTitle === 'New Chat' && userData.threads[threadIndex].messages.length === 1) {
+        userData.threads[threadIndex].threadTitle = message.substring(0, 30) + (message.length > 30 ? '...' : '');
+    }
+    
+    localStorage.setItem(email, JSON.stringify(userData));
+    setThreads(userData.threads);
+  }
 
   const sendMessage = async (message) => {
     if (!message.trim()) return;
@@ -171,6 +187,7 @@ function saveMessageToLocalStorage(email, message, source, role) {
     switchThread,
     messagesEndRef,
     deleteThread,
-    clearChat
+    clearChat,
+    updateThreadTitle
   };
 }

@@ -3,7 +3,10 @@ import { useAuth } from '../../auth/AuthContext';
 import { 
   SunIcon, 
   MoonIcon,
-  ChevronDownIcon
+  ChevronDownIcon,
+  PencilIcon,
+  CheckIcon,
+  XMarkIcon
 } from '@heroicons/react/24/outline';
 import { LoginButton } from '../LoginButton';
 import { ChatListModal } from './ChatListModal';
@@ -16,8 +19,33 @@ const ChatHeader = ({
   activeThreadId,
   onThreadSelect,
   onNewChat,
-  onOpenModal
+  onOpenModal,
+  onClearChat,
+  onUpdateThreadTitle
 }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState('');
+
+  const handleStartEdit = () => {
+    setEditTitle(activeThread?.threadTitle || '');
+    setIsEditing(true);
+  };
+
+  const handleSaveTitle = () => {
+    if (editTitle.trim() && activeThreadId) {
+      onUpdateThreadTitle(activeThreadId, editTitle.trim());
+      setIsEditing(false);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSaveTitle();
+    } else if (e.key === 'Escape') {
+      setIsEditing(false);
+    }
+  };
 
   return (
     <header className={`fixed top-0 left-0 right-0 ${
@@ -39,19 +67,58 @@ const ChatHeader = ({
 
         {/* Right side - Theme Toggle & User */}
         <div className="flex items-center gap-3">
-        <button
-            onClick={onOpenModal}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm ${
-              theme === 'dark'
-                ? 'hover:bg-gray-800 text-gray-300'
-                : 'hover:bg-gray-100 text-gray-700'
-            }`}
-          >
-            <span className="truncate max-w-[150px]">
-              {activeThread?.threadTitle || 'Your Chats'}
-            </span>
-            {/* <ChevronDownIcon className="w-4 h-4" /> */}
-          </button>
+          <div className="relative flex items-center">
+            {isEditing ? (
+              <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg ${
+                theme === 'dark'
+                  ? 'bg-gray-800 text-gray-300'
+                  : 'bg-gray-100 text-gray-700'
+              }`}>
+                <input
+                  type="text"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  className={`bg-transparent outline-none w-[150px] ${
+                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                  }`}
+                  autoFocus
+                />
+                <button
+                  onClick={handleSaveTitle}
+                  className="p-1 hover:text-blue-500"
+                >
+                  <CheckIcon className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setIsEditing(false)}
+                  className="p-1 hover:text-red-500"
+                >
+                  <XMarkIcon className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={onOpenModal}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm group ${
+                  theme === 'dark'
+                    ? 'hover:bg-gray-800 text-gray-300'
+                    : 'hover:bg-gray-100 text-gray-700'
+                }`}
+              >
+                <span className="truncate max-w-[150px]">
+                  {activeThread?.threadTitle || 'Your Chats'}
+                </span>
+                <PencilIcon 
+                  className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleStartEdit();
+                  }}
+                />
+              </button>
+            )}
+          </div>
           <button
             onClick={toggleTheme}
             className={`p-2 rounded-lg transition-colors ${

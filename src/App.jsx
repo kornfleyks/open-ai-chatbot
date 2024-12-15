@@ -21,7 +21,8 @@ function App() {
     switchThread,
     sendMessage,
     clearChat,
-    deleteThread
+    deleteThread,
+    updateThreadTitle
   } = useChat();
 
   const toggleTheme = () => {
@@ -49,6 +50,8 @@ function App() {
             onThreadSelect={switchThread}
             onNewChat={createNewThread}
             onOpenModal={() => setIsModalOpen(true)}
+            onClearChat={clearChat}
+            onUpdateThreadTitle={updateThreadTitle}
           />
           <ChatListModal
             isOpen={isModalOpen}

@@ -11,7 +11,7 @@ const SUGGESTIONS = [
 function ChatInput({ onSendMessage, isLoading, theme = 'light' }) {
   const [message, setMessage] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const inputRef = useRef(null);
+  // const inputRef = useRef(null);
   const textareaRef = useRef(null);
 
   useEffect(() => {
@@ -27,13 +27,18 @@ function ChatInput({ onSendMessage, isLoading, theme = 'light' }) {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [message]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!message.trim() || isLoading) return;
-    
-    onSendMessage(message);
+    const currentMessage = message;
     setMessage('');
     setShowSuggestions(false);
+    await onSendMessage(currentMessage);
+
+    // Focus after a brief delay
+    requestAnimationFrame(() => {
+      textareaRef.current?.focus();
+    });
   };
 
   const handleKeyPress = (e) => {
@@ -50,7 +55,7 @@ function ChatInput({ onSendMessage, isLoading, theme = 'light' }) {
   };
 
   return (
-    <div className={`${theme === 'dark' ? 'bg-gray-800 border-gray-700 rounded-2xl' : 'rounded-2xl'} py-4 px-0`}>
+    <div className={`${theme === 'dark' ? 'border-gray-700 rounded-2xl' : 'rounded-2xl'} py-4 px-0`}>
       <form onSubmit={handleSubmit} className="max-w-3xl mx-auto relative">
         <div className="relative flex items-center">
           <textarea
@@ -103,7 +108,7 @@ function ChatInput({ onSendMessage, isLoading, theme = 'light' }) {
                 onClick={() => {
                   setMessage(suggestion);
                   setShowSuggestions(false);
-                  inputRef.current?.focus();
+                  textareaRef.current?.focus();
                 }}
               >
                 {suggestion}

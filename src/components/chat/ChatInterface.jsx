@@ -15,13 +15,14 @@ const ChatInterface = ({
   threads = [],
   onThreadSelect,
   onNewChat,
-  onOpenModal
+  onOpenModal,
+  onUpdateThreadTitle
 }) => {
   return (
     <div className={`flex-1 flex flex-col min-h-screen ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
       {/* Header */}
       <ChatHeader 
-        activeThread={activeThreadId}
+        activeThread={threads.find(t => t.threadId === activeThreadId)}
         theme={theme}
         toggleTheme={toggleTheme}
         threads={threads}
@@ -29,11 +30,12 @@ const ChatInterface = ({
         onThreadSelect={onThreadSelect}
         onNewChat={onNewChat}
         onOpenModal={onOpenModal}
+        onUpdateThreadTitle={onUpdateThreadTitle}
       />
 
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto px-4 py-24 pb-36 relative z-0">
-        {activeThreadId ? (
+        {threads.length > 0 && activeThreadId ? (
           <div className="max-w-[800px] mx-auto space-y-6">
             {messages.map((message, index) => (
               <ChatMessage
@@ -105,7 +107,7 @@ const ChatInterface = ({
       {/* Floating Input Area */}
       {activeThreadId && (
         <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 w-full max-w-[800px] px-0">
-          <div className={`${theme === 'dark' ? 'bg-gray-800/80 border-gray-700' : 'bg-white/80 border-gray-200'} backdrop-blur-sm rounded-lg shadow-lg border`}>
+          <div className={`${theme === 'dark' ? 'bg-gray-800/60 border-gray-700' : 'bg-white/60 border-gray-200'} backdrop-blur-sm rounded-lg shadow-lg border`}>
             <ChatInput 
               onSendMessage={handleSendMessage} 
               isLoading={isLoading} 
