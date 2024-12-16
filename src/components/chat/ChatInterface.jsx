@@ -16,7 +16,8 @@ const ChatInterface = ({
   onThreadSelect,
   onNewChat,
   onOpenModal,
-  onUpdateThreadTitle
+  onUpdateThreadTitle,
+  onClearChat
 }) => {
   return (
     <div className={`flex-1 flex flex-col min-h-screen ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
@@ -31,6 +32,7 @@ const ChatInterface = ({
         onNewChat={onNewChat}
         onOpenModal={onOpenModal}
         onUpdateThreadTitle={onUpdateThreadTitle}
+        onClearChat={onClearChat}
       />
 
       {/* Messages Area */}
@@ -87,7 +89,7 @@ const ChatInterface = ({
                       <div
                         key={thread.threadId}
                         onClick={() => onThreadSelect(thread.threadId)}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+                        className={`flex justify-center items-center gap-2 px-4 py-2 rounded-lg ${
                           theme === 'dark'
                             ? 'bg-blue-500/10 hover:bg-blue-500/20 text-blue-400'
                             : 'bg-blue-50 hover:bg-blue-100 text-blue-600'
@@ -105,7 +107,7 @@ const ChatInterface = ({
       </div>
 
       {/* Floating Input Area */}
-      {threads.length > 0 && activeThreadId && (
+      {activeThreadId && (
         <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 w-full max-w-[800px] px-0">
           <div className={`${theme === 'dark' ? 'bg-gray-800/60 border-gray-700' : 'bg-white/60 border-gray-200'} backdrop-blur-sm rounded-lg shadow-lg border`}>
             <ChatInput 
@@ -115,7 +117,8 @@ const ChatInterface = ({
             />
           </div>
         </div>
-      )}
+        )
+      }
     </div>
   );
 };

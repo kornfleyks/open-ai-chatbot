@@ -57,9 +57,14 @@ const ChatHeader = ({
         {/* Left side - Logo & Thread Selector */}
         <div className="flex items-center gap-3">
           <div className="flex items-center">
-            <span className={`text-xl font-semibold ${
-              theme === 'dark' ? 'text-blue-400' : 'text-blue-600'
-            }`}>
+            <span 
+              className={`text-xl font-semibold cursor-pointer ${
+                theme === 'dark' ? 'text-blue-400' : 'text-blue-600'
+              }`} 
+              onClick={() => {
+                onThreadSelect(null);
+                onClearChat();
+              }}>
               AI Chat
             </span>
           </div>

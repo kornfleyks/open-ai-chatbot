@@ -8,7 +8,7 @@ import { ChatListModal } from './components/chat/ChatListModal';
 
 function App() {
   console.log("App is running");
-  const [theme, setTheme] = useState('light');
+  //const [theme, setTheme] = useState('light');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useAuth();
   const { 
@@ -23,7 +23,9 @@ function App() {
     sendMessage,
     clearChat,
     deleteThread,
-    updateThreadTitle
+    updateThreadTitle,
+    theme,
+    setTheme
   } = useChat();
 
   const toggleTheme = () => {
@@ -51,8 +53,8 @@ function App() {
             onThreadSelect={switchThread}
             onNewChat={createNewThread}
             onOpenModal={() => setIsModalOpen(true)}
-            onClearChat={clearChat}
             onUpdateThreadTitle={updateThreadTitle}
+            onClearChat={clearChat}
           />
           <ChatListModal
             isOpen={isModalOpen}
