@@ -114,6 +114,8 @@ const ChatInterface = ({
               onSendMessage={handleSendMessage} 
               isLoading={isLoading} 
               theme={theme}
+              messages={messages}
+              title={threads.find(t => t.threadId === activeThreadId)?.threadTitle}
             />
           </div>
         </div>

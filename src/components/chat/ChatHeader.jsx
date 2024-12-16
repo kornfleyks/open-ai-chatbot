@@ -6,7 +6,8 @@ import {
   ChevronDownIcon,
   PencilIcon,
   CheckIcon,
-  XMarkIcon
+  XMarkIcon,
+  ArrowUpTrayIcon
 } from '@heroicons/react/24/outline';
 import { LoginButton } from '../LoginButton';
 import { ChatListModal } from './ChatListModal';

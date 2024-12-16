@@ -1,4 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
+import { 
+  ArrowUpTrayIcon
+} from '@heroicons/react/24/outline';
+import jsPDF from 'jspdf';
+import toast from 'react-hot-toast';
 
 const SUGGESTIONS = [
   "Tell me about...",
@@ -8,7 +13,9 @@ const SUGGESTIONS = [
   "Tell me about fixer A"
 ];
 
-function ChatInput({ onSendMessage, isLoading, theme = 'light' }) {
+
+
+function ChatInput({ onSendMessage, isLoading, theme = 'light', messages, title }) {
   const [message, setMessage] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   // const inputRef = useRef(null);
@@ -26,6 +33,65 @@ function ChatInput({ onSendMessage, isLoading, theme = 'light' }) {
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [message]);
+
+  const exportToPDF = (messages) => {
+    try {
+      const doc = new jsPDF();
+      const lineHeight = 10;
+      let yPos = 20;
+  
+      // Add title
+      doc.setFontSize(16);
+      doc.text('Chat Export', 20, yPos);
+      yPos += lineHeight * 2;
+  
+      // Reset font size for messages
+      doc.setFontSize(12);
+  
+      messages.forEach((message) => {
+        // Add role as a header
+        doc.setFont(undefined, 'bold');
+        doc.text(`${message.role}:`, 20, yPos);
+        yPos += lineHeight;
+  
+        // Add message content
+        doc.setFont(undefined, 'normal');
+        const messageLines = doc.splitTextToSize(message.content, 170);
+        messageLines.forEach(line => {
+          if (yPos > 280) {  // Check if we need a new page
+            doc.addPage();
+            yPos = 20;
+          }
+          doc.text(line, 20, yPos);
+          yPos += lineHeight;
+        });
+  
+        yPos += lineHeight;  // Add space between messages
+      });
+  
+      // Save the PDF
+      doc.save(`${title}.pdf`);
+      
+      toast.success('Chat exported to PDF', {
+        duration: 2000,
+        className: theme === 'dark' ? '!bg-gray-800 !text-white' : '!bg-white',
+        iconTheme: {
+          primary: '#10B981',
+          secondary: 'white',
+        },
+      });
+    } catch (error) {
+      console.error('Failed to export chat:', error);
+      toast.error('Failed to export chat', {
+        duration: 2000,
+        className: theme === 'dark' ? '!bg-gray-800 !text-white' : '!bg-white',
+        iconTheme: {
+          primary: '#EF4444',
+          secondary: 'white',
+        },
+      });
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -118,12 +184,22 @@ function ChatInput({ onSendMessage, isLoading, theme = 'light' }) {
         )}
 
         {/* Keyboard shortcuts help */}
-        <div className={`mt-2 flex justify-between text-xs ${
+        <div className={`flex items-center justify-between text-xs px-4 py-2 ${
           theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
         }`}>
           <span>Press / for suggestions</span>
           <span>Shift + Enter for new line • Enter to send</span>
+          <button 
+            onClick={() => exportToPDF(messages)}
+            className={`p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ${
+              theme === 'dark' ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500 hover:text-gray-600'
+            }`}
+            title="Export chat to PDF"
+          >
+            <ArrowUpTrayIcon className="w-4 h-4" />
+          </button>
         </div>
+
       </form>
     </div>
   );
