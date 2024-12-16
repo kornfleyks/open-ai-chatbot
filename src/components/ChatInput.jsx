@@ -92,7 +92,7 @@ function ChatInput({ onSendMessage, isLoading, theme = 'light' }) {
 
         {/* Suggestions Popup */}
         {showSuggestions && (
-          <div className={`absolute bottom-full mb-2 w-full ${
+          <div className={`absolute bottom-full mb-6 w-full ${
             theme === 'dark'
               ? 'bg-gray-800 border-gray-700'
               : 'bg-white border-gray-200'
