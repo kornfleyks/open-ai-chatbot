@@ -7,6 +7,7 @@ import { Toaster } from 'react-hot-toast';
 import { ChatListModal } from './components/chat/ChatListModal';
 
 function App() {
+  console.log("App is running");
   const [theme, setTheme] = useState('light');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useAuth();
