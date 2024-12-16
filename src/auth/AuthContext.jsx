@@ -1,18 +1,36 @@
 // src/auth/AuthContext.jsx
-import { createContext, useContext, useState } from 'react';
-import { mockAuthService } from './mockAuthService';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { authService } from './authService';
+import { MsalProvider } from "@azure/msal-react";
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const initAuth = async () => {
+      if (authService.isAuthenticated()) {
+        try {
+          const account = authService.msalInstance.getAllAccounts()[0];
+          setUser(account);
+          setIsAuthenticated(true);
+        } catch (error) {
+          console.error('Error initializing auth:', error);
+        }
+      }
+      setLoading(false);
+    };
+
+    initAuth();
+  }, []);
 
   const login = async () => {
     try {
       setLoading(true);
-      const userData = await mockAuthService.login();
+      const userData = await authService.login();
       setUser(userData);
       setIsAuthenticated(true);
       return userData;
@@ -27,7 +45,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       setLoading(true);
-      await mockAuthService.logout();
+      await authService.logout();
       setUser(null);
       setIsAuthenticated(false);
     } catch (error) {
@@ -39,15 +57,17 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      isAuthenticated,
-      loading,
-      login,
-      logout
-    }}>
-      {children}
-    </AuthContext.Provider>
+    <MsalProvider instance={authService.msalInstance}>
+      <AuthContext.Provider value={{
+        user,
+        isAuthenticated,
+        loading,
+        login,
+        logout
+      }}>
+        {children}
+      </AuthContext.Provider>
+    </MsalProvider>
   );
 };
 

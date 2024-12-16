@@ -166,7 +166,6 @@ export function ChatListModal({
                       onClick={(e) => {
                         e.stopPropagation();
                         // Handle delete
-                        console.log('Delete chat:', thread.threadId);
                         onDeleteThread(thread.threadId);
                       }}
                       className={`p-2 rounded-lg transition-colors ${

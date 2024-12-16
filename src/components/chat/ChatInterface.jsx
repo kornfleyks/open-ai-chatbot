@@ -105,7 +105,7 @@ const ChatInterface = ({
       </div>
 
       {/* Floating Input Area */}
-      {activeThreadId && (
+      {threads.length > 0 && activeThreadId && (
         <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 w-full max-w-[800px] px-0">
           <div className={`${theme === 'dark' ? 'bg-gray-800/60 border-gray-700' : 'bg-white/60 border-gray-200'} backdrop-blur-sm rounded-lg shadow-lg border`}>
             <ChatInput 
