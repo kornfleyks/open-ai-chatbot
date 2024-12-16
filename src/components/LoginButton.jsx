@@ -66,7 +66,7 @@ export function LoginButton({ theme }) {
         </div>
         <div className="text-left">
           <div className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-100' : 'text-gray-500'}`}>{user.name}</div>
-          <div className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>{user.email}</div>
+          <div className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>{user.username}</div>
         </div>
       </button>
 

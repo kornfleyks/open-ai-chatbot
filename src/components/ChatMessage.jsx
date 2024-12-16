@@ -21,9 +21,13 @@ function ChatMessage({ message, timestamp = new Date(), theme = 'light' }) {
   };
 
   const getInitials = (name) => {
-    return name
-      .split(' ')
-      .map(word => word[0])
+    // Remove the part after |
+    const cleanName = name.split('|')[0].trim();
+    // Split the name into parts
+    const nameParts = cleanName.split(' ');
+    // Get first letter of each part and join them
+    return nameParts
+      .map(part => part[0])
       .join('')
       .toUpperCase();
   };

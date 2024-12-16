@@ -30,10 +30,10 @@ export function useChat() {
   }
 
   function createNewThread() {
-    if (!user?.email) return;
+    if (!user?.username) return;
     
-    const newThreadId = generateUniqueId(user.email);
-    const userData = JSON.parse(localStorage.getItem(user.email)) || { threads: [] };
+    const newThreadId = generateUniqueId(user.username);
+    const userData = JSON.parse(localStorage.getItem(user.username)) || { threads: [] };
     
     const newThread = {
         threadId: newThreadId,
@@ -43,7 +43,7 @@ export function useChat() {
     };
     
     userData.threads.push(newThread);
-    localStorage.setItem(user.email, JSON.stringify(userData));
+    localStorage.setItem(user.username, JSON.stringify(userData));
     setActiveThreadId(newThreadId);
     setMessages([]);
     setThreads(userData.threads);
@@ -51,9 +51,9 @@ export function useChat() {
   }
 
   function switchThread(threadId) {
-    if (!user?.email) return;
+    if (!user?.username) return;
     
-    const userData = JSON.parse(localStorage.getItem(user.email)) || { threads: [] };
+    const userData = JSON.parse(localStorage.getItem(user.username)) || { threads: [] };
     const thread = userData.threads.find(t => t.threadId === threadId);
     if (thread) {
       setMessages([]); // Clear messages first
@@ -65,16 +65,16 @@ export function useChat() {
   }
 
   function deleteThread(threadId) {
-    if (!user?.email) return;
+    if (!user?.username) return;
     
-    const userData = JSON.parse(localStorage.getItem(user.email)) || { threads: [] };
+    const userData = JSON.parse(localStorage.getItem(user.username)) || { threads: [] };
     const threadIndex = userData.threads.findIndex(t => t.threadId === threadId);
     
     if (threadIndex === -1) return;
     
     // Remove the thread
     userData.threads.splice(threadIndex, 1);
-    localStorage.setItem(user.email, JSON.stringify(userData));
+    localStorage.setItem(user.username, JSON.stringify(userData));
     
     // Update state
     setThreads(userData.threads);
@@ -90,24 +90,24 @@ export function useChat() {
   }
 
   function updateThreadTitle(threadId, newTitle) {
-    if (!user?.email) return;
+    if (!user?.username) return;
     
-    const userData = JSON.parse(localStorage.getItem(user.email)) || { threads: [] };
+    const userData = JSON.parse(localStorage.getItem(user.username)) || { threads: [] };
     const threadIndex = userData.threads.findIndex(t => t.threadId === threadId);
     
     if (threadIndex === -1) return;
     
     // Update the thread title
     userData.threads[threadIndex].threadTitle = newTitle;
-    localStorage.setItem(user.email, JSON.stringify(userData));
+    localStorage.setItem(user.username, JSON.stringify(userData));
     
     // Update state
     setThreads([...userData.threads]);
   }
 
   useEffect(() => {
-      if (user?.email) {
-          const loadedThreads = loadThreadsFromLocalStorage(user.email);
+      if (user?.username) {
+          const loadedThreads = loadThreadsFromLocalStorage(user.username);
           setThreads(loadedThreads);
           
           // If there are threads, set the most recent one as active
@@ -119,7 +119,7 @@ export function useChat() {
               // createNewThread();
           }
       }
-  }, [user?.email]);
+  }, [user?.username]);
 
   function saveMessageToLocalStorage(email, message, source, role) {
     if (!activeThreadId) return;
@@ -132,7 +132,7 @@ export function useChat() {
     const newMessage = {
         id: generateUniqueId(email),
         content: message,
-        email: user.email,
+        email: user.username,
         source: source,
         role: role,
         timestamp: new Date().toISOString()
@@ -161,8 +161,8 @@ export function useChat() {
       const assistantMessage = await serverChatService.sendMessage([...messages, userMessage]);
       setMessages(prevMessages => [...prevMessages, assistantMessage]);
 
-      saveMessageToLocalStorage(user.email, message, 'user', 'user');
-      saveMessageToLocalStorage(user.email, assistantMessage.content, assistantMessage.source, assistantMessage.role);
+      saveMessageToLocalStorage(user.username, message, 'user', 'user');
+      saveMessageToLocalStorage(user.username, assistantMessage.content, assistantMessage.source, assistantMessage.role);
     } catch (err) {
       console.error(err);
       setError(err.message || 'Failed to send message');
