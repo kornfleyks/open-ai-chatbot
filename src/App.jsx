@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from './auth/AuthContext';
 import { useChat } from './hooks/useChat';
 import ChatInterface from './components/chat/ChatInterface';
@@ -30,7 +30,15 @@ function App() {
 
   const toggleTheme = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
+    localStorage.setItem('theme', theme === 'light' ? 'dark' : 'light');
   };
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      setTheme(savedTheme);
+    }
+  }, []);
 
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'dark bg-gray-900' : 'bg-gray-50'}`}>
