@@ -2,11 +2,21 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const OpenAI = require('openai');
-const { searchDatabase } = require('./database');
+const { searchDatabase } = require('./database-data');
+const connectDB = require('./config/db');
+const userRoutes = require('./routes/users');
+const { searchFixers } = require('./controllers/fixerController');
 
+// Connect to MongoDB
+connectDB();
+
+// Create Express app
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Routes
+app.use('/api/users', userRoutes);
 
 const apiKey = process.env.OPENAI_API_KEY;
 if (!apiKey) {
@@ -18,9 +28,10 @@ const openai = new OpenAI({
 });
 
 // Define the available functions that the AI can call
+// Define the available functions that the AI can call
 const availableFunctions = {
   searchDatabase: async (query) => {
-    return await searchDatabase(query);
+    return await searchFixers(query);
   }
 };
 
