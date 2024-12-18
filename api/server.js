@@ -40,7 +40,7 @@ app.post('/api/chat', async (req, res) => {
     const messages = [
       {
         role: "system",
-        content: "You are a helpful assistant with access to a product database and fixers. When users ask about products or fixers, try searching the database first. If no relevant results are found in the database, or if the question is not about products or fixers, provide a helpful response based on your general knowledge. Always be helpful and informative, whether using database information or not."
+        content: "You are a helpful assistant with access to a product database and fixers. When users ask about products or fixers or to search the database, search the database first. If no relevant results are found in the database, or if the question is not about products or fixers, provide a helpful response based on your general knowledge. Always be helpful and informative, whether using database information or not."
       },
       ...req.body.messages
     ];
@@ -52,7 +52,7 @@ app.post('/api/chat', async (req, res) => {
       functions: [
         {
           name: "searchDatabase",
-          description: "Search the product database for information about products and fixers. Only use this when users specifically ask about products or fixers.",
+          description: "Search the product database for information about products and fixers or when the user asks about products or fixers or to search the database. Only use this when users specifically ask about products or fixers or to search the database.",
           parameters: {
             type: "object",
             properties: {
@@ -71,6 +71,7 @@ app.post('/api/chat', async (req, res) => {
     const responseMessage = completion.choices[0].message;
 
     // Check if the model wants to call a function
+    
     if (responseMessage.function_call) {
       const functionName = responseMessage.function_call.name;
       const functionArgs = JSON.parse(responseMessage.function_call.arguments);

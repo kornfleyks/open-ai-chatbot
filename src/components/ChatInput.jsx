@@ -10,7 +10,8 @@ const SUGGESTIONS = [
   "How do I...",
   "Can you explain...",
   "What's the difference between...",
-  "Tell me about fixer A"
+  "Tell me about fixer A",
+  "Search the database for the role \"fixer\"",
 ];
 
 
