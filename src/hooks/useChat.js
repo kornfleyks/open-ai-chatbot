@@ -13,11 +13,37 @@ export function useChat() {
   const [activeThreadId, setActiveThreadId] = useState(null);
   const [threads, setThreads] = useState([]);
   const [theme, setTheme] = useState('light');
+  const [saveTimeout, setSaveTimeout] = useState(null);
 
   //geenerate unique id
   function generateUniqueId(email) {
     return `${email}-${Date.now()}`;
   }
+
+  const debouncedSyncWithDatabase = (username, userData) => {
+    // Clear any existing timeout
+    if (saveTimeout) clearTimeout(saveTimeout);
+    
+    // Set new timeout
+    const timeoutId = setTimeout(() => {
+        syncWithDatabase(username, userData);
+    }, 2000); // 2 second delay
+    
+    setSaveTimeout(timeoutId);
+  };
+
+  // Use this when messages change
+  useEffect(() => {
+      if (!user?.username) return;
+      
+      const userData = JSON.parse(localStorage.getItem(user.username)) || { threads: [] };
+      const currentThread = userData.threads.find(t => t.threadId === activeThreadId);
+      if (currentThread) {
+          currentThread.messages = messages;
+          localStorage.setItem(user.username, JSON.stringify(userData));
+          debouncedSyncWithDatabase(user.username, userData);
+      }
+  }, [messages]);
   
   // Function to scroll to the bottom of the message list
   const scrollToBottom = () => {
@@ -35,12 +61,32 @@ export function useChat() {
     return userData.threads.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
   }
 
+  const syncWithDatabase = async (username, userData) => {
+    try {
+        const baseUrl = 'http://localhost:3001/api/threads';
+        const response = await fetch(`${baseUrl}/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                username,
+                threads: userData.threads
+            })
+        });
+        
+        if (!response.ok) throw new Error('Database sync failed');
+        const data = await response.json();
+        //////console.log('Synced data:', data);
+    } catch (error) {
+        console.error('Database sync error:', error);
+    }
+};
+
   // Function to create a new thread
   function createNewThread() {
     if (!user?.username) return;
     
     const newThreadId = generateUniqueId(user.username);
-    const userData = JSON.parse(localStorage.getItem(user.username)) || { threads: [] };
+    const userData = JSON.parse(localStorage.getItem(user.username)) || { data: {} };
     
     const newThread = {
         threadId: newThreadId,
@@ -49,8 +95,16 @@ export function useChat() {
         messages: []
     };
     
+    // Save to localStorage
     userData.threads.push(newThread);
     localStorage.setItem(user.username, JSON.stringify(userData));
+
+    // Add debug logging
+    ////console.log('About to sync with database:', {username: user.username,userData: userData});
+
+    // Sync with database
+    syncWithDatabase(user.username, userData);
+
     setActiveThreadId(newThreadId);
     setMessages([]);
     setThreads(userData.threads);
@@ -115,6 +169,8 @@ export function useChat() {
         },
       });
     }
+    // Sync with database immediately for deletion
+    syncWithDatabase(user.username, userData);
   }
 
   // Function to update the title of a thread
@@ -132,6 +188,8 @@ export function useChat() {
     
     // Update state
     setThreads([...userData.threads]);
+    // Sync with database immediately for title updates
+    syncWithDatabase(user.username, userData);
   }
 
   // Load threads from local storage

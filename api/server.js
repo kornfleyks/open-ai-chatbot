@@ -5,6 +5,7 @@ const OpenAI = require('openai');
 const { searchDatabase } = require('./database-data');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/users');
+const threadRoutes = require('./routes/threads');
 const { searchFixers } = require('./controllers/fixerController');
 
 // Connect to MongoDB
@@ -17,6 +18,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/users', userRoutes);
+app.use('/api/threads', threadRoutes);
 
 const apiKey = process.env.OPENAI_API_KEY;
 if (!apiKey) {

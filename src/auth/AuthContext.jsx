@@ -12,17 +12,19 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const initAuth = async () => {
-      if (authService.isAuthenticated()) {
-        try {
-          const account = authService.msalInstance.getAllAccounts()[0];
-          setUser(account);
-          setIsAuthenticated(true);
-        } catch (error) {
-          console.error('Error initializing auth:', error);
-        }
+      try {
+          // Check if there are any accounts
+          const accounts = authService.msalInstance.getAllAccounts();
+          if (accounts.length > 0) {
+              setIsAuthenticated(true);
+              setUser(accounts[0]);
+          }
+      } catch (error) {
+          console.error("Auth initialization failed:", error);
+          setIsAuthenticated(false);
+          setUser(null);
       }
-      setLoading(false);
-    };
+  };
 
     initAuth();
   }, []);
