@@ -7,7 +7,8 @@ import {
   CheckIcon,
   XMarkIcon,
   EllipsisVerticalIcon,
-  ArrowRightOnRectangleIcon
+  ArrowRightOnRectangleIcon,
+  ChevronDownIcon
 } from '@heroicons/react/24/outline';
 import { LoginButton } from '../LoginButton';
 
@@ -84,7 +85,7 @@ const ChatHeader = ({
 
         {/* Center - Thread Selector */}
         <div className="flex justify-center items-center">
-          <div className="relative flex items-center">
+          <div className="relative flex items-center gap-2">
             {isEditing ? (
               <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg ${
                 theme === 'dark'
@@ -116,36 +117,34 @@ const ChatHeader = ({
               </div>
             ) : (
               <>
+                <button
+                  onClick={onOpenModal}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm ${
+                    theme === 'dark'
+                      ? 'hover:bg-gray-800 text-gray-300'
+                      : 'hover:bg-gray-100 text-gray-700'
+                  }`}
+                >
+                  <span className="truncate max-w-[150px]">
+                    {activeThread?.threadTitle || 'Your Chats'}
+                  </span>
+                  <ChevronDownIcon className="w-4 h-4" />
+                </button>
 
-              <button
-                onClick={onOpenModal}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm group ${
-                  theme === 'dark'
-                    ? 'hover:bg-gray-800 text-gray-300'
-                    : 'hover:bg-gray-100 text-gray-700'
-                }`}
-              >
-                <span className="truncate max-w-[150px] pt-0.5 pr-2">
-                  {activeThread?.threadTitle || 'Your Chats'}
-                </span>
-                <span className={`h-6 border-l opacity-0 group-hover:opacity-100 transition-opacity ${
+                <span className={`h-6 border-l ${
                   theme === 'dark' 
                     ? 'border-gray-600' 
                     : 'border-gray-300'
                 }`}></span>
-                <span 
-                  className={`p-1 rounded hover:bg-${theme === 'dark' ? 'gray-700' : 'gray-200'} transition-colors`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleStartEdit();
-                  }}
+
+                <button
+                  className={`p-1.5 rounded-lg hover:bg-${theme === 'dark' ? 'gray-800' : 'gray-100'} transition-colors`}
+                  onClick={handleStartEdit}
                 >
-                  
                   <PencilIcon 
-                    className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="w-4 h-4"
                   />
-                </span>
-              </button>
+                </button>
               </>
             )}
           </div>
@@ -153,15 +152,6 @@ const ChatHeader = ({
 
         {/* Right side - Theme Toggle & User */}
         <div className="flex items-center justify-end gap-3">
-          {/* <LoginButton theme={theme} /> */}
-          
-          {/* Separator in case we add the userprofile */}
-          {/* <span className={`h-6 border-l ${
-            theme === 'dark' 
-              ? 'border-gray-600' 
-              : 'border-gray-300'
-          }`}></span> */}
-          
           <div className="relative" ref={menuRef}>
             <button
               onClick={() => setShowMenu(!showMenu)}
@@ -216,21 +206,20 @@ const ChatHeader = ({
                   }}
                   className={`flex items-center w-full px-4 py-2 text-sm ${
                     theme === 'dark'
-                      ? 'hover:bg-gray-700 text-gray-300'
-                      : 'hover:bg-gray-100 text-gray-700'
+                      ? 'hover:bg-gray-700 text-red-400'
+                      : 'hover:bg-gray-100 text-red-600'
                   }`}
                 >
                   <ArrowRightOnRectangleIcon className="w-4 h-4 mr-2" />
-                  Sign Out
+                  Sign out
                 </button>
               </div>
             )}
           </div>
         </div>
-
       </div>
     </header>
   );
-};
+}
 
 export default ChatHeader;
