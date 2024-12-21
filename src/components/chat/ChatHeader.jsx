@@ -177,7 +177,7 @@ const ChatHeader = ({
             </button>
 
             {showMenu && (
-              <div className={`absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 ${
+              <div className={`absolute right-0 mt-2 w-48 rounded-md shadow-lg py-0 ${
                 theme === 'dark' 
                   ? 'bg-gray-800 border border-gray-700' 
                   : 'bg-white border border-gray-200'
