@@ -1,31 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../auth/AuthContext';
 import { 
   SunIcon, 
   MoonIcon,
-  ChevronDownIcon,
   PencilIcon,
   CheckIcon,
   XMarkIcon,
-  ArrowUpTrayIcon
+  EllipsisVerticalIcon,
+  ArrowRightOnRectangleIcon
 } from '@heroicons/react/24/outline';
 import { LoginButton } from '../LoginButton';
-import { ChatListModal } from './ChatListModal';
 
 const ChatHeader = ({ 
   activeThread,
   theme,
   toggleTheme,
-  threads,
   activeThreadId,
   onThreadSelect,
-  onNewChat,
   onOpenModal,
   onClearChat,
   onUpdateThreadTitle
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState('');
+  const [showMenu, setShowMenu] = useState(false);
+  const { logout } = useAuth();
+  const menuRef = useRef(null);
+  
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleStartEdit = () => {
     setEditTitle(activeThread?.threadTitle || '');
@@ -54,8 +65,8 @@ const ChatHeader = ({
         ? 'bg-gray-900/80 border-gray-700' 
         : 'bg-white/80 border-gray-200'
     } backdrop-blur-sm z-40 border-b`}>
-      <div className="max-w-[800px] mx-auto h-16 flex items-center justify-between px-4">
-        {/* Left side - Logo & Thread Selector */}
+      <div className="max-w-[800px] mx-auto h-16 grid grid-cols-3 items-center px-4">
+        {/* Left side - Logo */}
         <div className="flex items-center gap-3">
           <div className="flex items-center">
             <span 
@@ -71,8 +82,8 @@ const ChatHeader = ({
           </div>
         </div>
 
-        {/* Right side - Theme Toggle & User */}
-        <div className="flex items-center gap-3">
+        {/* Center - Thread Selector */}
+        <div className="flex justify-center items-center">
           <div className="relative flex items-center">
             {isEditing ? (
               <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg ${
@@ -104,6 +115,8 @@ const ChatHeader = ({
                 </button>
               </div>
             ) : (
+              <>
+
               <button
                 onClick={onOpenModal}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm group ${
@@ -112,36 +125,109 @@ const ChatHeader = ({
                     : 'hover:bg-gray-100 text-gray-700'
                 }`}
               >
-                <span className="truncate max-w-[150px]">
+                <span className="truncate max-w-[150px] pt-0.5 pr-2">
                   {activeThread?.threadTitle || 'Your Chats'}
                 </span>
-                <PencilIcon 
-                  className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                <span className={`h-6 border-l opacity-0 group-hover:opacity-100 transition-opacity ${
+                  theme === 'dark' 
+                    ? 'border-gray-600' 
+                    : 'border-gray-300'
+                }`}></span>
+                <span 
+                  className={`p-1 rounded hover:bg-${theme === 'dark' ? 'gray-700' : 'gray-200'} transition-colors`}
                   onClick={(e) => {
                     e.stopPropagation();
                     handleStartEdit();
                   }}
-                />
+                >
+                  
+                  <PencilIcon 
+                    className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                  />
+                </span>
               </button>
+              </>
             )}
           </div>
-          <button
-            onClick={toggleTheme}
-            className={`p-2 rounded-lg transition-colors ${
-              theme === 'dark'
-                ? 'hover:bg-gray-800 text-gray-300'
-                : 'hover:bg-gray-100 text-gray-700'
-            }`}
-          >
-            {theme === 'dark' ? (
-              <SunIcon className="w-5 h-5" />
-            ) : (
-              <MoonIcon className="w-5 h-5" />
-            )}
-          </button>
-
-          <LoginButton theme={theme} />
         </div>
+
+        {/* Right side - Theme Toggle & User */}
+        <div className="flex items-center justify-end gap-3">
+          {/* <LoginButton theme={theme} /> */}
+          
+          {/* Separator in case we add the userprofile */}
+          {/* <span className={`h-6 border-l ${
+            theme === 'dark' 
+              ? 'border-gray-600' 
+              : 'border-gray-300'
+          }`}></span> */}
+          
+          <div className="relative" ref={menuRef}>
+            <button
+              onClick={() => setShowMenu(!showMenu)}
+              className={`p-2 rounded-lg transition-colors ${
+                theme === 'dark'
+                  ? 'hover:bg-gray-800 text-gray-300'
+                  : 'hover:bg-gray-100 text-gray-700'
+              }`}
+            >
+              <EllipsisVerticalIcon className="w-5 h-5" />
+            </button>
+
+            {showMenu && (
+              <div className={`absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 ${
+                theme === 'dark' 
+                  ? 'bg-gray-800 border border-gray-700' 
+                  : 'bg-white border border-gray-200'
+              }`}>
+                {/* User */}
+                <LoginButton theme={theme} />
+
+                {/* Theme Toggle */}
+                <button
+                  onClick={() => {
+                    toggleTheme();
+                    setShowMenu(false);
+                  }}
+                  className={`flex items-center w-full px-4 py-2 text-sm ${
+                    theme === 'dark'
+                      ? 'hover:bg-gray-700 text-gray-300'
+                      : 'hover:bg-gray-100 text-gray-700'
+                  }`}
+                >
+                  {theme === 'dark' ? (
+                    <>
+                      <SunIcon className="w-4 h-4 mr-2" />
+                      Light Mode
+                    </>
+                  ) : (
+                    <>
+                      <MoonIcon className="w-4 h-4 mr-2" />
+                      Dark Mode
+                    </>
+                  )}
+                </button>
+
+                {/* Sign Out */}
+                <button
+                  onClick={() => {
+                    logout();
+                    setShowMenu(false);
+                  }}
+                  className={`flex items-center w-full px-4 py-2 text-sm ${
+                    theme === 'dark'
+                      ? 'hover:bg-gray-700 text-gray-300'
+                      : 'hover:bg-gray-100 text-gray-700'
+                  }`}
+                >
+                  <ArrowRightOnRectangleIcon className="w-4 h-4 mr-2" />
+                  Sign Out
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
       </div>
     </header>
   );

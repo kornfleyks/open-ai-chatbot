@@ -67,7 +67,6 @@ export function useChat() {
       const response = await fetch(`http://localhost:3001/api/threads/${username}`);
       if (!response.ok) throw new Error('Failed to fetch threads');
       const userData = await response.json();
-      console.log('Loaded threads from database:', userData);
       return userData.threads.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
     } catch (error) {
       console.error('Error loading threads:', error);
@@ -79,7 +78,6 @@ export function useChat() {
   useEffect(() => {
     if (user?.username) {
       loadThreadsFromDatabase(user.username).then(loadedThreads => {
-        console.log('Loaded threads from database:', loadedThreads);
         setThreads(loadedThreads);
       });
     }
