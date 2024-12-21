@@ -61,6 +61,30 @@ export function useChat() {
     return userData.threads.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
   }
 
+  // Function to load threads from database
+  const loadThreadsFromDatabase = async (username) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/threads/${username}`);
+      if (!response.ok) throw new Error('Failed to fetch threads');
+      const userData = await response.json();
+      console.log('Loaded threads from database:', userData);
+      return userData.threads.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    } catch (error) {
+      console.error('Error loading threads:', error);
+      return [];
+    }
+  };
+
+  // Load threads when user changes
+  useEffect(() => {
+    if (user?.username) {
+      loadThreadsFromDatabase(user.username).then(loadedThreads => {
+        console.log('Loaded threads from database:', loadedThreads);
+        setThreads(loadedThreads);
+      });
+    }
+  }, [user?.username]);
+
   const syncWithDatabase = async (username, userData) => {
     try {
         const baseUrl = 'http://localhost:3001/api/threads';
@@ -79,7 +103,7 @@ export function useChat() {
     } catch (error) {
         console.error('Database sync error:', error);
     }
-};
+  };
 
   // Function to create a new thread
   function createNewThread() {
@@ -194,8 +218,9 @@ export function useChat() {
 
   // Load threads from local storage
   useEffect(() => {
+    return;
       if (user?.username) {
-          const loadedThreads = loadThreadsFromLocalStorage(user.username);
+          const loadedThreads = loadThreadsFromDatabase(user.username);
           setThreads(loadedThreads);
           
           // If there are threads, set the most recent one as active
