@@ -85,7 +85,7 @@ const ChatHeader = ({
 
         {/* Center - Thread Selector */}
         <div className="flex justify-center items-center">
-          <div className="relative flex items-center gap-2">
+          <div className="relative flex items-center">
             {isEditing ? (
               <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg ${
                 theme === 'dark'
@@ -116,36 +116,48 @@ const ChatHeader = ({
                 </button>
               </div>
             ) : (
-              <>
+              <div className="group relative">
+                <div className={`absolute inset-0 -right-8 rounded-lg transition-colors ${
+                  theme === 'dark'
+                    ? 'group-hover:bg-gray-800'
+                    : 'group-hover:bg-gray-100'
+                }`}></div>
                 <button
                   onClick={onOpenModal}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm ${
+                  className={`relative flex items-center gap-2 px-3 py-1.5 text-sm ${
                     theme === 'dark'
-                      ? 'hover:bg-gray-800 text-gray-300'
-                      : 'hover:bg-gray-100 text-gray-700'
+                      ? 'text-gray-300'
+                      : 'text-gray-700'
                   }`}
                 >
-                  <span className="truncate max-w-[150px]">
+                  <span className="truncate max-w-[150px] mx-2">
                     {activeThread?.threadTitle || 'Your Chats'}
                   </span>
-                  <ChevronDownIcon className="w-4 h-4" />
                 </button>
-
-                <span className={`h-6 border-l ${
-                  theme === 'dark' 
-                    ? 'border-gray-600' 
-                    : 'border-gray-300'
-                }`}></span>
-
-                <button
-                  className={`p-1.5 rounded-lg hover:bg-${theme === 'dark' ? 'gray-800' : 'gray-100'} transition-colors`}
-                  onClick={handleStartEdit}
-                >
-                  <PencilIcon 
-                    className="w-4 h-4"
-                  />
-                </button>
-              </>
+                <div className="absolute -right-5 top-1/2 -translate-y-1/2 flex items-center pl-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <span className={`h-6 border-l ${
+                    theme === 'dark' 
+                      ? 'border-gray-600' 
+                      : 'border-gray-300'
+                  }`}></span>
+                  <button
+                    className={`p-1.5 ml-1 relative rounded-md transition-colors ${
+                      theme === 'dark'
+                        ? 'hover:bg-blue-500/40'
+                        : 'hover:bg-blue-200'
+                    }`}
+                    onClick={handleStartEdit}
+                  >
+                    <PencilIcon 
+                      className={`w-4 h-4 ${
+                        theme === 'dark'
+                          ? 'text-gray-300'
+                          : 'text-gray-700'
+                      }`}
+                    />
+                  </button>
+                </div>
+              </div>
             )}
           </div>
         </div>
