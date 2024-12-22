@@ -35,6 +35,8 @@ const ChatInterface = ({
         onUpdateThreadTitle={onUpdateThreadTitle}
         onClearChat={onClearChat}
         exportToPDF={exportToPDF}
+        messages={messages}
+        title={threads.find(t => t.threadId === activeThreadId)?.threadTitle}
       />
 
       {/* Messages Area */}

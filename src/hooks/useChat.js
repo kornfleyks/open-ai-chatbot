@@ -22,7 +22,7 @@ export function useChat() {
   }
 
   // Function to export chat to PDF
-  const exportToPDF = (messages) => {
+  const exportToPDF = (messages, title) => {
     try {
       const doc = new jsPDF();
       const lineHeight = 10;

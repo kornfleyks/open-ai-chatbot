@@ -21,7 +21,9 @@ const ChatHeader = ({
   onOpenModal,
   onClearChat,
   onUpdateThreadTitle,
-  exportToPDF
+  exportToPDF,
+  messages,
+  title
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState('');
@@ -213,10 +215,8 @@ const ChatHeader = ({
 
                 {/* Export to PDF */}
                 <button
-                  onClick={() => {
-                    exportToPDF();
-                    setShowMenu(false);
-                  }}
+                  onClick={() => exportToPDF(messages, title)}
+                  disabled={!activeThreadId}
                   className={`flex items-center w-full px-4 py-2 text-sm ${
                     theme === 'dark'
                       ? 'hover:bg-gray-700 text-gray-300'
