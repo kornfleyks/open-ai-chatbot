@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { serverChatService } from '../services/api/serverChatService';
 import { useAuth } from '../auth/AuthContext';
 import { set } from 'date-fns';
+import jsPDF from 'jspdf';
 import toast from 'react-hot-toast';
 
 export function useChat() {
@@ -19,6 +20,66 @@ export function useChat() {
   function generateUniqueId(email) {
     return `${email}-${Date.now()}`;
   }
+
+  // Function to export chat to PDF
+  const exportToPDF = (messages) => {
+    try {
+      const doc = new jsPDF();
+      const lineHeight = 10;
+      let yPos = 20;
+  
+      // Add title
+      doc.setFontSize(16);
+      doc.text('Chat Export', 20, yPos);
+      yPos += lineHeight * 2;
+  
+      // Reset font size for messages
+      doc.setFontSize(12);
+  
+      messages.forEach((message) => {
+        // Add role as a header
+        doc.setFont(undefined, 'bold');
+        doc.text(`${message.role}:`, 20, yPos);
+        yPos += lineHeight;
+  
+        // Add message content
+        doc.setFont(undefined, 'normal');
+        const messageLines = doc.splitTextToSize(message.content, 170);
+        messageLines.forEach(line => {
+          if (yPos > 280) {  // Check if we need a new page
+            doc.addPage();
+            yPos = 20;
+          }
+          doc.text(line, 20, yPos);
+          yPos += lineHeight;
+        });
+  
+        yPos += lineHeight;  // Add space between messages
+      });
+  
+      // Save the PDF
+      doc.save(`${title}.pdf`);
+      
+      toast.success('Chat exported to PDF', {
+        duration: 2000,
+        className: theme === 'dark' ? '!bg-gray-800 !text-white' : '!bg-white',
+        iconTheme: {
+          primary: '#10B981',
+          secondary: 'white',
+        },
+      });
+    } catch (error) {
+      console.error('Failed to export chat:', error);
+      toast.error('Failed to export chat', {
+        duration: 2000,
+        className: theme === 'dark' ? '!bg-gray-800 !text-white' : '!bg-white',
+        iconTheme: {
+          primary: '#EF4444',
+          secondary: 'white',
+        },
+      });
+    }
+  };
 
   const debouncedSyncWithDatabase = (username, userData) => {
     // Clear any existing timeout
@@ -306,6 +367,7 @@ export function useChat() {
     clearChat,
     updateThreadTitle,
     theme,
-    setTheme
+    setTheme,
+    exportToPDF
   };
 }

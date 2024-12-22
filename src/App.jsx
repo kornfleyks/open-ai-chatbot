@@ -24,7 +24,8 @@ function App() {
     deleteThread,
     updateThreadTitle,
     theme,
-    setTheme
+    setTheme,
+    exportToPDF
   } = useChat();
 
   const toggleTheme = () => {
@@ -62,6 +63,7 @@ function App() {
             onOpenModal={() => setIsModalOpen(true)}
             onUpdateThreadTitle={updateThreadTitle}
             onClearChat={clearChat}
+            exportToPDF={exportToPDF}
           />
           <ChatListModal
             isOpen={isModalOpen}

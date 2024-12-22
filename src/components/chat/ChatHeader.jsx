@@ -8,7 +8,7 @@ import {
   XMarkIcon,
   EllipsisVerticalIcon,
   ArrowRightOnRectangleIcon,
-  ChevronDownIcon
+  ArrowUpTrayIcon
 } from '@heroicons/react/24/outline';
 import { LoginButton } from '../LoginButton';
 
@@ -20,7 +20,8 @@ const ChatHeader = ({
   onThreadSelect,
   onOpenModal,
   onClearChat,
-  onUpdateThreadTitle
+  onUpdateThreadTitle,
+  exportToPDF
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState('');
@@ -210,6 +211,22 @@ const ChatHeader = ({
                   )}
                 </button>
 
+                {/* Export to PDF */}
+                <button
+                  onClick={() => {
+                    exportToPDF();
+                    setShowMenu(false);
+                  }}
+                  className={`flex items-center w-full px-4 py-2 text-sm ${
+                    theme === 'dark'
+                      ? 'hover:bg-gray-700 text-gray-300'
+                      : 'hover:bg-gray-100 text-gray-700'
+                  }`}
+                >
+                  <ArrowUpTrayIcon className="w-4 h-4 mr-2" />
+                  Export chat to PDF
+                </button>
+
                 {/* Sign Out */}
                 <button
                   onClick={() => {
@@ -225,6 +242,7 @@ const ChatHeader = ({
                   <ArrowRightOnRectangleIcon className="w-4 h-4 mr-2" />
                   Sign out
                 </button>
+
               </div>
             )}
           </div>

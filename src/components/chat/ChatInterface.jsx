@@ -17,7 +17,8 @@ const ChatInterface = ({
   onNewChat,
   onOpenModal,
   onUpdateThreadTitle,
-  onClearChat
+  onClearChat,
+  exportToPDF
 }) => {
   return (
     <div className={`flex-1 flex flex-col min-h-screen ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
@@ -33,6 +34,7 @@ const ChatInterface = ({
         onOpenModal={onOpenModal}
         onUpdateThreadTitle={onUpdateThreadTitle}
         onClearChat={onClearChat}
+        exportToPDF={exportToPDF}
       />
 
       {/* Messages Area */}
