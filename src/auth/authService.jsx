@@ -26,7 +26,7 @@ export class AuthService {
     async login() {
         try {
             const response = await this.msalInstance.loginPopup(loginRequest);
-            console.log(response);
+            //console.log(response);
             
             if (response.account) {
                 // Check if user exists in database

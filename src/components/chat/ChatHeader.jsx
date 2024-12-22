@@ -217,11 +217,12 @@ const ChatHeader = ({
                 <button
                   onClick={() => exportToPDF(messages, title)}
                   disabled={!activeThreadId}
+                  title={!activeThreadId ? "Please select a chat first." : ""}
                   className={`flex items-center w-full px-4 py-2 text-sm ${
                     theme === 'dark'
                       ? 'hover:bg-gray-700 text-gray-300'
                       : 'hover:bg-gray-100 text-gray-700'
-                  }`}
+                  } ${!activeThreadId ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   <ArrowUpTrayIcon className="w-4 h-4 mr-2" />
                   Export chat to PDF

@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
     try {
       setLoading(true);
       const userData = await authService.login();
-      console.log(userData);
+      //console.log(userData);
       setUser(userData);
       setIsAuthenticated(true);
       return userData;
