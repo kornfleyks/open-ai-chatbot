@@ -112,14 +112,14 @@ function ChatMessage({ message, timestamp = new Date(), theme = 'light' }) {
                 >
                   <ClipboardDocumentIcon className={`w-4 h-4 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`} />
                 </button>
-                {isUser && (
+                {/* {isUser && (
                   <button
                     className={`p-1.5 rounded-full ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors duration-200`}
                     title="Edit message"
                   >
                     <PencilSquareIcon className={`w-4 h-4 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`} />
                   </button>
-                )}
+                )} */}
             </div>
 
 

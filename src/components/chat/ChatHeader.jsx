@@ -144,12 +144,17 @@ const ChatHeader = ({
                       : 'border-gray-300'
                   }`}></span>
                   <button
-                    className={`p-1.5 ml-1 relative rounded-md transition-colors ${
+                    className={`p-1.5 ml-1 relative rounded-md transition-colors 
+                    ${
+                      !activeThreadId ? 'opacity-50 cursor-not-allowed' : `${
                       theme === 'dark'
                         ? 'hover:bg-blue-500/40'
                         : 'hover:bg-blue-200'
+                      }`
                     }`}
                     onClick={handleStartEdit}
+                    disabled={!activeThreadId}
+                    title={!activeThreadId ? "Please select a chat first to edit its title." : ""}
                   >
                     <PencilIcon 
                       className={`w-4 h-4 ${
